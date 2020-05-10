@@ -17,11 +17,8 @@ public class CalendarActivity extends BaseActivity implements CalendarFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-
         initialize();
     }
-
-
 
     @Override
     public void initView() {

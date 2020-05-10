@@ -14,5 +14,4 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(this, CalendarActivity.class);
         startActivity(intent);
     }
-
 }
