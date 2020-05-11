@@ -74,14 +74,14 @@ public class CalendarFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeByMillis);
         calendar.set(Calendar.DATE,1);
-
+        //Calendar를 해당 달의 1일로 변경하여 1일이 무슨 요일인지 판단하고 요일에 맞게 dayList에 공백을 추가한다.
         int dayNum = calendar.get(Calendar.DAY_OF_WEEK);
         for (int i = 1; i < dayNum; i++){
             Log.d("dayNum", String.valueOf(dayNum));
             dayList.add("");
         }
         setCalendarDate(calendar.get(Calendar.MONTH)+1);
-
+        //GridAdapter에 dayList를 담아 gridView와 연결한 후 ViewGroup을 반환한다.
         gridAdapter = new GridAdapter(getContext(), dayList);
         gridView.setAdapter(gridAdapter);
 
@@ -89,6 +89,7 @@ public class CalendarFragment extends Fragment {
     }
 
     private void setCalendarDate(int month){
+        //공백만 담겨 있는 dayList에 해당 월의 마지막 날까지 숫자를 추가한다.
         calendar.set(Calendar.MONTH, month -1);
 
         for (int i = 0; i < calendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
@@ -149,6 +150,7 @@ public class CalendarFragment extends Fragment {
             holder.tvItemGridView.setText(""+getItem(position));
             calendar = Calendar.getInstance();
             final ViewHolder finalHolder = holder;
+            // 캘린더의 '일'이 클릭되었을 때, title로 표시되고 있는 연, 월과 해당 textView의 text를 조합하여 "연, 월, 일" 형태로 만들어 Toast로 출력한다.
             convertView.setOnClickListener((new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

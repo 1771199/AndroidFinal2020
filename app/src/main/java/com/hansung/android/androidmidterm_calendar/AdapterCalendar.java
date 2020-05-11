@@ -13,10 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
-/**
- * Created by hnhariat on 2016-01-06.
- */
 public class AdapterCalendar extends FragmentStatePagerAdapter {
     private HashMap<Integer, CalendarFragment> frgMap;
     private ArrayList<Long> listMonthByMillis = new ArrayList<>();
@@ -31,8 +27,9 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
     }
 
     private void clearPrevFragments(FragmentManager fm) {
+        // FragmentManager에서 관리하는 모든 Fragment를 list에 담는다.
         List<Fragment> listFragment = fm.getFragments();
-
+        // Fragment가 null이 아니라면 fragment를 모두 지운다(초기화).
         if (listFragment != null) {
             FragmentTransaction ft = fm.beginTransaction();
 
@@ -41,6 +38,7 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
                     ft.remove(f);
                 }
             }
+            // ft.commit()과 비슷한 역할을 한다.
             ft.commitAllowingStateLoss();
         }
     }
@@ -48,14 +46,17 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         CalendarFragment frg = null;
+        // frgMap에 저장된 값이 있다면 position에 따라 fragment를 가져온다.
         if (frgMap.size() > 0) {
             frg = frgMap.get(position);
         }
+        // frgMap에 저장된 값이 없다면 아직 frg는 null이다. 즉 저장된 fragment가 없음을 뜻하므로 fragment를 생성하고 frgMap에 추가한다.
         if (frg == null) {
             frg = CalendarFragment.newInstance(position);
             frg.setOnFragmentListener(onFragmentListener);
             frgMap.put(position, frg);
         }
+        // 해당 fragment의 날짜를 listMonthbyMillis의 position에 대한 값을 가져와 설정한다.
         frg.setTimeByMillis(listMonthByMillis.get(position));
         Calendar set = frg.getCalendar();
         frg.setCalendar(listMonthByMillis.get(position));
@@ -69,12 +70,14 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
     }
 
     public void setNumOfMonth(int numOfMonth) {
+        // 이 메소드는 CalendarActivity에서 사용되며 파라미터로 COUNT_PAGE(상수 12)가 들어온다.
         this.numOfMonth = numOfMonth;
-
+        //현재 시간의 Calendar 객체를 생성하여 12달 전 월의 1일로 변경한다.
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -numOfMonth);
         calendar.set(Calendar.DATE, 1);
-
+        // 25번 만큼 반복문을 돌리며 listMonthByMillis에 캘린더의 시간 값을 저장하고 캘린더의 월을 하나씩 더해 준다.
+        // 이를 통해 COUNT_PAGE를 index로 가지는 listMonthByMillis에는 현재 달의 1일 시간 값이 표시되며, 전후로 12개 씩의 값을 가진다.
         for (int i = 0; i < numOfMonth * 2 + 1; i++) {
             listMonthByMillis.add(calendar.getTimeInMillis());
             calendar.add(Calendar.MONTH, 1);
@@ -84,8 +87,9 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
     }
 
     public void addNext() {
+        // 배열에 저장된 가장 마지막 값을 lastMonthMillis로 꺼내온다.
         long lastMonthMillis = listMonthByMillis.get(listMonthByMillis.size() - 1);
-
+        // calendar를 가장 마지막 값으로 설정한 후 for문을 돌리며 한 달씩 증가한 값을 listMonthByMillis에 추가한다.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(lastMonthMillis);
         for (int i = 0; i < numOfMonth; i++) {
