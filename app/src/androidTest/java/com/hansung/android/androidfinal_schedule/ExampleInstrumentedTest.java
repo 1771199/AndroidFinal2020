@@ -1,4 +1,4 @@
-package com.hansung.android.androidmidterm_calendar;
+package com.hansung.android.androidfinal_schedule;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.hansung.android.androidmidterm_calendar", appContext.getPackageName());
+        assertEquals("com.hansung.android.androidfinal_schedule", appContext.getPackageName());
     }
 }

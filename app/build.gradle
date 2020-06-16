@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.hansung.android.androidmidterm_calendar"
+        applicationId "com.hansung.android.androidfinal_schedule"
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 1

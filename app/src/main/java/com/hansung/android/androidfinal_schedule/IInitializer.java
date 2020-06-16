@@ -1,4 +1,4 @@
-package com.hansung.android.androidmidterm_calendar;
+package com.hansung.android.androidfinal_schedule;
 
 interface IInitializer {
     void initData();
