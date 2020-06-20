@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/oneDay"
         android:layout_width="38dp"
-        android:layout_height="match_parent"
+        android:layout_height="38dp"
         android:layout_margin="15dp"
         android:gravity="top"
         android:padding="5dp"

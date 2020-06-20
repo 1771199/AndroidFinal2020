@@ -1,6 +1,9 @@
 package com.hansung.android.androidfinal_schedule;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,4 +31,6 @@ public class BaseActivity extends AppCompatActivity implements IInitializer {
     @Override
     public void initControl() {
     }
+
+
 }

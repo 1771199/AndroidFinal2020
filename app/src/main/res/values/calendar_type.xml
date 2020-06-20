@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="calendar_type">
+        <item>Month</item>
+        <item>Week</item>
+        <item>Date</item>
+    </string-array>
+</resources>

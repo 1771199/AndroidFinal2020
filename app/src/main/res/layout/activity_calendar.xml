@@ -5,13 +5,22 @@
     android:layout_height="match_parent"
     android:id="@+id/fragment_container"
     tools:context=".CalendarActivity">
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"></androidx.viewpager.widget.ViewPager>
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="PLUS"
+            android:textSize="12dp"
+            android:layout_gravity="right"
+            android:id="@+id/plus_task"/>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"></androidx.viewpager.widget.ViewPager>
+    </LinearLayout>
 
 </RelativeLayout>

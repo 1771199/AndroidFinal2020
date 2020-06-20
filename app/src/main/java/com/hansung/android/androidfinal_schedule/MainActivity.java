@@ -3,6 +3,11 @@ package com.hansung.android.androidfinal_schedule;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 /*
     SwipeView로 캘린더를 나타내는 프로젝트입니다.
     실행 시 현재 날자의 월 달력이 실행되고, 화면 swipe를 통하여 달력을 탐색할 수 있습니다.
@@ -27,12 +32,36 @@ import android.os.Bundle;
 
 public class MainActivity extends BaseActivity {
 
+    Button Mbtn;
+    Button Wbtn;
+    Button Dbtn;
+    public static int calendarType;    // 0: Month, 1: Week, 2: Day
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize();
-        Intent intent = new Intent(this, CalendarActivity.class);
-        startActivity(intent);
+        Mbtn = (Button)findViewById(R.id.Month);
+        Wbtn = (Button)findViewById(R.id.Week);
+        Dbtn = (Button)findViewById(R.id.Day);
+        View.OnClickListener btnListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.Month: calendarType = 0;                        break;
+                    case R.id.Week: calendarType = 1;                        break;
+                    case R.id.Day: calendarType = 2;                        break;
+                }
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                startActivity(intent);
+            }
+        };
+        Mbtn.setOnClickListener(btnListener);
+        Wbtn.setOnClickListener(btnListener);
+        Dbtn.setOnClickListener(btnListener);
+
+
     }
+
 }

@@ -1,5 +1,7 @@
 package com.hansung.android.androidfinal_schedule;
 
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -86,16 +88,56 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
+    public void setNumOfWeeks(int numOfWeeks){
+        this.numOfMonth = numOfWeeks;
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.WEEK_OF_YEAR, -numOfWeeks);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        for (int i = 0; i < numOfMonth * 2 + 1; i++) {
+            listMonthByMillis.add(calendar.getTimeInMillis());
+            calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setDate(int numOfWeeks){
+        this.numOfMonth = numOfWeeks;
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -numOfWeeks);
+        for (int i = 0; i < numOfMonth * 2 + 1; i++) {
+            listMonthByMillis.add(calendar.getTimeInMillis());
+            calendar.add(Calendar.DATE, 1);
+        }
+        notifyDataSetChanged();
+    }
+
     public void addNext() {
         // 배열에 저장된 가장 마지막 값을 lastMonthMillis로 꺼내온다.
         long lastMonthMillis = listMonthByMillis.get(listMonthByMillis.size() - 1);
         // calendar를 가장 마지막 값으로 설정한 후 for문을 돌리며 한 달씩 증가한 값을 listMonthByMillis에 추가한다.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(lastMonthMillis);
-        for (int i = 0; i < numOfMonth; i++) {
-            calendar.add(Calendar.MONTH, 1);
-            listMonthByMillis.add(calendar.getTimeInMillis());
+        if (MainActivity.calendarType == 0){
+            for (int i = 0; i < numOfMonth; i++) {
+                calendar.add(Calendar.MONTH, 1);
+                listMonthByMillis.add(calendar.getTimeInMillis());
+            }
         }
+        else if (MainActivity.calendarType == 1){
+            for (int i = 0; i < numOfMonth; i++) {
+                calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                listMonthByMillis.add(calendar.getTimeInMillis());
+            }
+        }
+        else{
+            for (int i = 0; i < numOfMonth * 2 + 1; i++) {
+                calendar.add(Calendar.DATE, 1);
+                listMonthByMillis.add(calendar.getTimeInMillis());
+            }
+
+        }
+
+
         notifyDataSetChanged();
     }
 
@@ -104,12 +146,26 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(lastMonthMillis);
-        calendar.set(Calendar.DATE, 1);
-        for (int i = numOfMonth; i > 0; i--) {
-            calendar.add(Calendar.MONTH, -1);
-
-            listMonthByMillis.add(0, calendar.getTimeInMillis());
+        if(MainActivity.calendarType == 0){
+            calendar.set(Calendar.DATE, 1);
+            for (int i = numOfMonth; i > 0; i--) {
+                calendar.add(Calendar.MONTH, -1);
+                listMonthByMillis.add(0, calendar.getTimeInMillis());
+            }
         }
+        else if(MainActivity.calendarType == 1){
+            for (int i = numOfMonth; i > 0; i--) {
+                calendar.add(Calendar.WEEK_OF_YEAR, -1);
+                listMonthByMillis.add(0, calendar.getTimeInMillis());
+            }
+        }
+        else {
+            for (int i = numOfMonth; i > 0; i--) {
+                calendar.add(Calendar.DATE, -1);
+                listMonthByMillis.add(0, calendar.getTimeInMillis());
+            }
+        }
+
         notifyDataSetChanged();
     }
 
@@ -125,7 +181,17 @@ public class AdapterCalendar extends FragmentStatePagerAdapter {
         Date date = new Date();
         date.setTime(listMonthByMillis.get(position));
         return sdf.format(date);
+    }
 
+    public String getWeekDisplayed(int position){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(listMonthByMillis.get(position));
+        String weekOfMonth = String.valueOf(calendar.get(Calendar.WEEK_OF_MONTH));
+        sdf = new SimpleDateFormat("yyyy년 MM월");
+        Date date = new Date();
+        date.setTime(listMonthByMillis.get(position));
+        String titleWeeks = sdf.format(date) + " " +  weekOfMonth + "째 주";
+        return titleWeeks;
     }
 
     public void setOnFragmentListener(CalendarFragment.OnFragmentListener onFragmentListener) {
