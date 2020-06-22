@@ -24,7 +24,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCLaOK5khuBc5SYEp3Ppyn0jYqfN1qqmO8" />
+            android:value= "API_KEY"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.hansung.android.androidfinal_schedule.fileprovider"
