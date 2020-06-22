@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,12 +31,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class TaskActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -52,15 +58,16 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     EditText startm;
     EditText endm;
     EditText place;
+    Button search;
     EditText memo;
     Button camerabtn;
     Button videobtn;
     ImageView imageView;
     VideoView videoView;
-    private String mPhotoFileName = null;
+    private String mPhotoFileName = "";
     private File mPhotoFile = null;
-    private File destination;
-    private String mVideoFileName = null;
+    private File destination = null;
+    private String mVideoFileName = "";
     private Uri videoUri;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_VIDEO_CAPTURE = 2;
@@ -95,6 +102,14 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 deleteRecord();
             }
         });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAndSetLocation(place.getText().toString());
+            }
+        });
+
         camerabtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -115,8 +130,9 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         LatLng hansung = new LatLng(37.5817891, 127.008175);
-        googleMap.addMarker(new MarkerOptions().position(hansung).title("한성대학교"));
+        //googleMap.addMarker(new MarkerOptions().position(hansung).title("한성대학교"));
         // move the camera
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(hansung));
 
@@ -132,6 +148,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         endh = findViewById(R.id.end_h);
         endm = findViewById(R.id.end_m);
         place = findViewById(R.id.place);
+        search = findViewById(R.id.search);
         memo = findViewById(R.id.memo);
         camerabtn = findViewById(R.id.camerabtn);
         imageView = findViewById(R.id.image);
@@ -167,7 +184,8 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
                 startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-            }
+            }else
+                Toast.makeText(getApplicationContext(), "file null", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -244,7 +262,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 destination = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                         mVideoFileName);
 
-                videoView.setVideoURI(videoUri);
+                videoView.setVideoURI(Uri.fromFile(destination));
                 videoView.start();
             }
 
@@ -256,6 +274,23 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.addMarker(new MarkerOptions().position(hansung).title("한성대학교"));
         // move the camera
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(hansung));
+    }
+
+    private void getAndSetLocation(String locationName){
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.KOREA);
+            List<Address> addresses = geocoder.getFromLocationName(locationName, 1);
+            Address bestResult = (Address) addresses.get(0);
+
+            glocation = new LatLng(bestResult.getLatitude(), bestResult.getLongitude());
+            googleMap.addMarker(
+                    new MarkerOptions().position(glocation).title(locationName).alpha(0.8f).icon(BitmapDescriptorFactory.defaultMarker())
+            );
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(glocation, 15));
+        }
+        catch (IOException e){
+            Toast.makeText(getApplicationContext(), "Please enter a different name for the location.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
