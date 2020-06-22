@@ -21,23 +21,10 @@ public class CalendarActivity extends BaseActivity implements CalendarFragment.O
     private AdapterCalendar adapter;
     public static String title;
     public static String selected = "";
-    Button plus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-        plus = findViewById(R.id.plus_task);
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selected == ""){
-                    Toast.makeText(getApplicationContext(), "일정을 추가할 날짜를 선택해 주세요.", Toast.LENGTH_SHORT).show();
-                }
-                else Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
-                //startActivity(intent);
-            }
-        });
         initialize();
 
     }

@@ -1,13 +1,18 @@
 package com.hansung.android.androidfinal_schedule;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 /*
     SwipeView로 캘린더를 나타내는 프로젝트입니다.
     실행 시 현재 날자의 월 달력이 실행되고, 화면 swipe를 통하여 달력을 탐색할 수 있습니다.
@@ -35,7 +40,8 @@ public class MainActivity extends BaseActivity {
     Button Mbtn;
     Button Wbtn;
     Button Dbtn;
-    public static int calendarType;    // 0: Month, 1: Week, 2: Day
+    public static int calendarType;    // 0: Month, 1: Week, 2: Dayc
+    final int REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,29 @@ public class MainActivity extends BaseActivity {
         Wbtn.setOnClickListener(btnListener);
         Dbtn.setOnClickListener(btnListener);
 
+        checkDangerousPermissions();
+
 
     }
+    private void checkDangerousPermissions() {
+        String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+        int permissionCheck = PackageManager.PERMISSION_GRANTED;
+        for (int i = 0; i < permissions.length; i++) {
+            permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
+            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+                break;
+            }
+        }
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA);
+
+        }
+    }
+
+
 
 }
