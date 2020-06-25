@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -87,6 +88,17 @@ public class MainActivity extends BaseActivity {
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA);
 
+        }
+    }
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) { // permission was granted
+            switch (requestCode) {
+                case REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA:
+                    break;
+            }
+        } else { // permission was denied
+            Toast.makeText(getApplicationContext(), "접근 권한이 필요합니다", Toast.LENGTH_SHORT).show();
         }
     }
 

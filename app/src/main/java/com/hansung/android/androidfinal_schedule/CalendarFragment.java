@@ -3,6 +3,7 @@ package com.hansung.android.androidfinal_schedule;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,13 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -28,7 +32,13 @@ public class CalendarFragment extends Fragment {
     private ViewGroup mRootView;
     private GridView gridView;
     private GridAdapter gridAdapter;
+    public AdapterTasks taskAdapter;
+    ListView taskList;
     public static ArrayList<String> dayList;
+    public static ArrayList<SingleTask> singleTaskArrayList;
+    Button plusbtn;
+    DBHelper dbHelper;
+    public SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Calendar calendar;
 
@@ -71,12 +81,16 @@ public class CalendarFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-       dayList = new ArrayList<String>();
+        dayList = new ArrayList<String>();
+        singleTaskArrayList = new ArrayList<>();
+        dbHelper = new DBHelper(getContext());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeByMillis);
         if(MainActivity.calendarType == 0 ){
             mRootView = (ViewGroup)inflater.inflate(R.layout.calendar_layout, container, false);
             gridView = (GridView) mRootView.findViewById(R.id.calendar_grid);
+            plusbtn = (Button) mRootView.findViewById(R.id.plus_);
+
             calendar.setFirstDayOfWeek(Calendar.SUNDAY);
             calendar.set(Calendar.DATE,1);
             gridView.setNumColumns(7);
@@ -85,30 +99,56 @@ public class CalendarFragment extends Fragment {
             for (int i = 1; i < dayNum; i++){
                 dayList.add("");
             }
-
+            String taskDate = sdf.format(Calendar.getInstance().getTime());
+            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Month");
             setCalendarDate(calendar.get(Calendar.MONTH)+1);
+            taskList = mRootView.findViewById(R.id.task_list);
+            //singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Month");
+
         }
 
         else if(MainActivity.calendarType == 1){
             mRootView = (ViewGroup)inflater.inflate(R.layout.calendar_layout, container, false);
             gridView = (GridView) mRootView.findViewById(R.id.calendar_grid);
+            plusbtn = (Button) mRootView.findViewById(R.id.plus_);
             calendar.setFirstDayOfWeek(Calendar.SUNDAY);
             gridView.setNumColumns(7);
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            taskList = mRootView.findViewById(R.id.task_list);
             setWeekCalendarDate(calendar);
 
             }
+
         else{
             mRootView = (ViewGroup)inflater.inflate(R.layout.day_calendar_layout, container, false);
             gridView = (GridView) mRootView.findViewById(R.id.calendar_grid);
+            plusbtn = (Button) mRootView.findViewById(R.id.plus_);
             dayList.add(String.valueOf(calendar.get(Calendar.DATE)));
             TextView day = mRootView.findViewById(R.id.day);
             day.setText(dayOfWeek(calendar));
+            String taskDate = sdf.format(calendar.getTime());
+            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Day");
+            taskAdapter = new AdapterTasks(getContext(), singleTaskArrayList);
+            taskList = mRootView.findViewById(R.id.task_list);
+            taskList.setAdapter(taskAdapter);
         }
+        View.OnClickListener btnListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TaskActivity.class);
+                intent.putExtra("isNew", true);
+                startActivity(intent);
+            }
+        };
 
+        plusbtn.setOnClickListener(btnListener);
         //GridAdapter에 dayList를 담아 gridView와 연결한 후 ViewGroup을 반환한다.
         gridAdapter = new GridAdapter(getContext(), dayList);
         gridView.setAdapter(gridAdapter);
+        taskAdapter = new AdapterTasks(getContext(), singleTaskArrayList);
+        taskList.setAdapter(taskAdapter);
+
+
         return mRootView;
     }
 
@@ -123,9 +163,12 @@ public class CalendarFragment extends Fragment {
 
     private void setWeekCalendarDate(Calendar calendar){
         for (int i = 0; i < 7; i++){
+            String taskDate = sdf.format(calendar.getTime());
+            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Day");
             dayList.add(String.valueOf(calendar.get(Calendar.DATE)));
             calendar.add(Calendar.DATE, 1);
         }
+
     }
 
     private String dayOfWeek(Calendar calendar){
@@ -214,8 +257,6 @@ public class CalendarFragment extends Fragment {
                     String day = finalHolder.tvItemGridView.getText().toString();
                     CalendarActivity.selected = YM + " " + day + "일";
                     Toast.makeText(context, YM + " " + day + "일", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), TaskListActivity.class);
-                    startActivity(intent);
 
                 }
 
@@ -230,6 +271,9 @@ public class CalendarFragment extends Fragment {
     private class ViewHolder{
         TextView tvItemGridView;
     }
+
+
+
 
 
 }

@@ -8,21 +8,18 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -44,7 +41,6 @@ import java.util.Locale;
 
 public class TaskActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    final int REQUEST_CODE_READ_CONTACTS = 1;
     private DBHelper mDbHelper;
     GoogleMap googleMap;
     LatLng glocation;
@@ -64,14 +60,16 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     Button videobtn;
     ImageView imageView;
     VideoView videoView;
-    private String mPhotoFileName = "";
+    private String mPhotoFileName = null;
     private File mPhotoFile = null;
     private File destination = null;
-    private String mVideoFileName = "";
+    private String mVideoFileName = null;
     private Uri videoUri;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_VIDEO_CAPTURE = 2;
-    MediaController mc;
+    final int REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA = 3;
+    public static boolean isNew;
+    public static SingleTask task;
 
 
     @Override
@@ -79,16 +77,21 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         mDbHelper = new DBHelper(this);
-        // 권한 확인
-        if (ContextCompat.checkSelfPermission(TaskActivity.this, Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) { // 권한이 없으므로, 사용자에게 권한 요청 다이얼로그 표시
-            ActivityCompat.requestPermissions(TaskActivity.this,
-                    new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_CODE_READ_CONTACTS);
-        } else // 권한 있음! 해당 데이터나 장치에 접근!
-        {}
-        setUI();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        setUI();
+
+        Intent intent = getIntent();
+        isNew = intent.getExtras().getBoolean("isNew");
+        if(isNew == false){
+            task = (SingleTask) intent.getSerializableExtra("SingleTask");
+            if(task.taskName!=null) Log.e("taskName: ", "onCreate: NOT NULL" + task.taskName);
+            else Log.e("taskName: ", "onCreate: NULL" );
+            setTaskDetail();
+        }
+        btnTextSet();
+
+       // checkDangerousPermissions();
 
         savebtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -116,16 +119,24 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dispatchTakePictureIntent();
             }
         });
-        mc = new MediaController(this);
-        videoView.setMediaController(mc);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+
+            }
+        });
+
 
         videobtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 dispatchTakeVideoIntent();
-                videoView.start();
+                //videoView.start();
             }
         });
+
+
+
     }
 
     @Override
@@ -184,8 +195,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
                 startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-            }else
-                Toast.makeText(getApplicationContext(), "file null", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -212,7 +222,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         endh.getText()+":"+endm.getText(), place.getText().toString(),memo.getText().toString(), mPhotoFileName, mVideoFileName);
 
         if (nOfRows >0){
-            initUI();
+            //initUI();
             Toast.makeText(this,nOfRows+" 일정 추가 완료!", Toast.LENGTH_SHORT).show();
         }
         else
@@ -231,7 +241,6 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initUI(){
-        _id.setText("");
         title.setText("");
         date.setText("");
         starth.setText("");
@@ -241,8 +250,8 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         place.setText("");
         initMap();
         memo.setText("");
-        imageView.setImageBitmap(null);
-        videoView.setVideoURI(null);
+        mPhotoFileName = "";
+        mVideoFileName = "";
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -259,10 +268,10 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             if(destination != null){
-                destination = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                         mVideoFileName);
-
-                videoView.setVideoURI(Uri.fromFile(destination));
+                videoView.setVideoURI(Uri.parse("/sdcard/Android/data/com.hansung.android.androidfinal_schedule/files/Movies/"+mVideoFileName));
+                videoView.requestFocus();
                 videoView.start();
             }
 
@@ -292,5 +301,66 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(getApplicationContext(), "Please enter a different name for the location.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void checkDangerousPermissions() {
+        String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+        int permissionCheck = PackageManager.PERMISSION_GRANTED;
+        for (int i = 0; i < permissions.length; i++) {
+            permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
+            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+                break;
+            }
+        }
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA);
+
+        }
+    }
+
+    public void btnTextSet(){
+        if(isNew) deletebtn.setActivated(false);
+        else savebtn.setText("Revise");
+    }
+
+    public void setTaskDetail(){
+        title.setText(task.taskName);
+        date.setText(task.date);
+        if(!task.startTime.equals(":")){
+            starth.setText(task.startTime.split(":")[0]);
+            startm.setText(task.startTime.split(":")[1]);
+        }
+        if(!task.endTime.equals(":")){
+            endh.setText(task.endTime.split(":")[0]);
+            endm.setText(task.endTime.split(":")[1]);
+        }
+        if(!task.place.equals("")){
+            place.setText(task.place);
+            getAndSetLocation(task.place);
+        }
+        if(!task.textMemo.equals(""))        memo.setText(task.textMemo);
+        if(task.image != null){
+            setImageView(task.image);
+        }
+        if(task.video != null){
+            setVideoView(task.video);
+        }
+    }
+
+
+    public void setImageView(String imgName){
+
+    }
+
+    public void setVideoView(String vedName){
+
+    }
+
+
+
+
 
 }

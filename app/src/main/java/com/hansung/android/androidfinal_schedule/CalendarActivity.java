@@ -4,13 +4,18 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -19,13 +24,17 @@ public class CalendarActivity extends BaseActivity implements CalendarFragment.O
     private static final int COUNT_PAGE = 12;
     ViewPager pager;
     private AdapterCalendar adapter;
+    private AdapterTasks adapterTasks;
     public static String title;
     public static String selected = "";
+    private DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
         initialize();
+        //viewAllToListView();
 
     }
 
@@ -92,5 +101,30 @@ public class CalendarActivity extends BaseActivity implements CalendarFragment.O
 
     @Override
     public void onFragmentListener(View view) {
+    }
+
+    private void viewAllToListView(){
+        Cursor cursor = dbHelper.getAllTaskByMethod();
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
+                R.layout.task_item, cursor, new String[]{
+                DataBases.Tasks.TASK_NAME,
+                DataBases.Tasks.DATE},
+                new int[]{R.id.name_of_task, R.id.date_of_task}, 0);
+
+        ListView lv = (ListView)findViewById(R.id.task_list);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Adapter adapter = adapterView.getAdapter();
+                TextView mName = findViewById(R.id.name_of_task);
+                TextView nDate = findViewById(R.id.date_of_task);
+                mName.setText(((Cursor)adapter.getItem(i)).getString(1));
+                nDate.setText(((Cursor)adapter.getItem(i)).getString(2));
+            }
+        });
+        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 }

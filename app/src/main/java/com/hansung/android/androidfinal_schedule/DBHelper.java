@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class DBHelper extends SQLiteOpenHelper {
     final static String TAG="TaskDB";
 
@@ -140,7 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.update(DataBases.Tasks.TABLE_NAME, values, whereClause, whereArgs);
     }
 
-    public void syncAllTask(SQLiteDatabase db, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vic){
+    public void syncAllTask(SQLiteDatabase db, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid){
         Cursor cursor = getAllTasksBySQL();
         while (cursor.moveToNext()){
 
@@ -153,9 +155,39 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DataBases.Tasks.PLACE, place);
         values.put(DataBases.Tasks.TEXT_MEMO, memo);
         values.put(DataBases.Tasks.PICTURE, pic);
-        values.put(DataBases.Tasks.VIDEO, vic);
+        values.put(DataBases.Tasks.VIDEO, vid);
         cursor.moveToNext();
         db.insertOrThrow(DataBases.Tasks.TABLE_NAME, null, values);
     }
+
+    public ArrayList<SingleTask> getTaskSelectedOption(String date, String option){
+        ArrayList<SingleTask> tasks = new ArrayList<>();
+        Cursor cursor = getAllTasksBySQL();
+        String[] splitDate = new String[3];
+        splitDate = date.split("-");
+        if(option == "Month"){
+            while(cursor.moveToNext()){
+                String dbDate = cursor.getString(cursor.getColumnIndex("Date"));
+                if((dbDate.split("-")[0].equals(splitDate[0])) && dbDate.split("-")[1].equals(splitDate[1])){
+                    Log.e(TAG, "inIF" );
+                    SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
+                            cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
+                    tasks.add(addedTask);
+                }
+            }
+        }
+        else if(option == "Day"){
+            while(cursor.moveToNext()){
+                String dbDate = cursor.getString(cursor.getColumnIndex("Date"));
+                if(dbDate.equals(date)){
+                    SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
+                            cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
+                    tasks.add(addedTask);
+                }
+            }
+        }
+        return tasks;
+    }
+
 
 }

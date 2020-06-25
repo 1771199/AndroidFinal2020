@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/plus_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="PLUS"/>
     <TextView
         android:id="@+id/day"
         android:layout_width="match_parent"
@@ -20,6 +26,6 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/day_task"/>
+        android:id="@+id/task_list"/>
 
 </LinearLayout>
