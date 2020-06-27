@@ -1,180 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="5dp"
     android:layout_marginVertical="2dp"
+    android:orientation="vertical"
     tools:context=".TaskActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginRight="20dp"
+            android:text="@string/delete" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="20dp"
+            android:text="@string/save" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="할 일: "></TextView>
+
+        <EditText
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="제목을 입력하세요"></EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="날짜: "></TextView>
+
+        <EditText
+            android:id="@+id/task_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:hint="yyyy-MM-dd 형식으로 입력하세요"></EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="시작 시간: "></TextView>
+
+        <EditText
+            android:id="@+id/start_h"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"></EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="시 "></TextView>
+
+        <EditText
+            android:id="@+id/start_m"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"></EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="분"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="종료 시간: "></TextView>
+
+        <EditText
+            android:id="@+id/end_h"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"></EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="시 "></TextView>
+
+        <EditText
+            android:id="@+id/end_m"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"></EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="분"></TextView>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/delete"
-                android:layout_width="100dp"
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="장소: "></TextView>
+
+            <EditText
+                android:id="@+id/place"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/delete"
-                android:layout_gravity="left"
-                android:layout_marginRight="20dp"/>
+                android:hint="장소의 이름을 입력하세요"></EditText>
 
             <Button
-                android:id="@+id/save"
+                android:id="@+id/search"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="right"
-                android:text="@string/save"
-                android:layout_marginLeft="20dp"/>
+                android:text="@string/search"></Button>
+
         </LinearLayout>
 
-
-        <LinearLayout
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
+            android:layout_height="100dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="할 일: "></TextView>
-
-            <EditText
-                android:id="@+id/task_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="제목을 입력하세요"></EditText>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="날짜: "></TextView>
-
-            <EditText
-                android:id="@+id/task_date"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="yyyy-MM-dd 형식으로 입력하세요"
-                android:gravity="center_vertical"></EditText>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="시작 시간: "></TextView>
-
-            <EditText
-                android:id="@+id/start_h"
-                android:layout_width="50dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"></EditText>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="시 "></TextView>
-
-            <EditText
-                android:id="@+id/start_m"
-                android:layout_width="50dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"></EditText>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="분"></TextView>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="종료 시간: "></TextView>
-
-            <EditText
-                android:id="@+id/end_h"
-                android:layout_width="50dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"></EditText>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="시 "></TextView>
-
-            <EditText
-                android:id="@+id/end_m"
-                android:layout_width="50dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"></EditText>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="분"></TextView>
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="장소: "></TextView>
-
-                <EditText
-                    android:id="@+id/place"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="장소의 이름을 입력하세요"></EditText>
-                <Button
-                    android:id="@+id/search"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/search"
-                    android:layout_gravity="right"></Button>
-
-            </LinearLayout>
-            <fragment
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:name="com.google.android.gms.maps.SupportMapFragment" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -198,41 +204,47 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal">
+
             <Button
+                android:id="@+id/start_rec"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:id="@+id/start_rec"
-                android:text="Voice Record"
                 android:layout_gravity="left"
-                android:layout_marginRight="10dp"></Button>
+                android:layout_marginRight="10dp"
+                android:text="Voice Record"></Button>
+
             <Button
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
                 android:id="@+id/stop_rec"
-                android:layout_gravity="center"
-                android:text="STOP"
-                android:layout_marginHorizontal="10dp"></Button>
-            <Button
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:text="STOP"></Button>
+
+            <Button
                 android:id="@+id/play_rec"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:layout_marginLeft="10dp"
                 android:text="PLAY"></Button>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/camerabtn"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="Camera"
                 android:layout_gravity="left"
-                android:layout_marginRight="20dp"></Button>
+                android:layout_marginRight="20dp"
+                android:text="Camera"></Button>
+
             <Button
                 android:id="@+id/videobtn"
                 android:layout_width="100dp"
@@ -247,18 +259,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"></ImageView>
-
+                android:layout_weight="1"></ImageView>
             <VideoView
                 android:id="@+id/video"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></VideoView>
+                android:layout_height="match_parent"
+                android:layout_weight="1"></VideoView>
         </LinearLayout>
     </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

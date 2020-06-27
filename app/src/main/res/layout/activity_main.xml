@@ -61,7 +61,8 @@
                 android:textSize="12dp"
                 android:padding="10dp"
                 android:text="Day"></Button>
-        </LinearLayout>
 
+
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

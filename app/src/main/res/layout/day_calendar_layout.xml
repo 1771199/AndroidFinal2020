@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/plus_"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="PLUS"/>
     <TextView
         android:id="@+id/day"
         android:layout_width="match_parent"
@@ -23,6 +17,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/plus_"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="+"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

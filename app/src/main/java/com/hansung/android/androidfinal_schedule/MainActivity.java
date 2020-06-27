@@ -38,8 +38,10 @@ public class MainActivity extends BaseActivity {
     Button Mbtn;
     Button Wbtn;
     Button Dbtn;
+    Button tbtn;
     public static int calendarType;    // 0: Month, 1: Week, 2: Dayc
     final int REQUEST_EXTERNAL_STORAGE_FOR_MULTIMEDIA = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -304,13 +304,12 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             mVideoFileName = "VIDEO" + currentDateFormat() + ".mp4";
-            destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES), mVideoFileName);
+            File destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES), mVideoFileName);
 
             if (destination != null) {
-                videoUri = FileProvider.getUriForFile(this, "com.hansung.android.androidfinal_schedule.fileprovider", destination);
+                Uri videoUri = FileProvider.getUriForFile(this, "com.hansung.android.androidfinal_schedule.fileprovider", destination);
 
                 takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
-                takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
                 startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
             }
         }
@@ -327,17 +326,16 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
                 imageView.setImageURI(Uri.fromFile(mPhotoFile));
             }
         }
-
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             if(mVideoFileName != null){
+                MediaController mc = new MediaController(this);
                 mc = new MediaController(this);
-                destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
-                        mVideoFileName);
-                Log.e("VideoFileName: ",destination.getName());
-                videoView.setVideoURI(Uri.fromFile(destination));
                 videoView.setMediaController(mc);
-
-
+                File destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
+                        mVideoFileName);
+                final Uri videoUri = FileProvider.getUriForFile(this,
+                        "com.hansung.android.androidfinal_schedule.fileprovider", destination);
+                videoView.setVideoURI(videoUri);
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     public void onPrepared(MediaPlayer player) {
                         videoView.seekTo(0);
@@ -481,6 +479,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
             mc = new MediaController(this);
             destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                     vedName);
+            videoView = findViewById(R.id.video);
             videoView.setMediaController(mc);
             videoView.setVideoURI(Uri.fromFile(destination));
 
