@@ -5,12 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/plus_"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="PLUS"/>
     <LinearLayout
         android:id="@+id/dow"
         android:layout_width="match_parent"
@@ -81,6 +75,15 @@
         android:id="@+id/calendar_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/plus_"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="+"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

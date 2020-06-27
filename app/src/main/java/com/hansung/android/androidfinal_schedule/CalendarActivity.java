@@ -36,6 +36,13 @@ public class CalendarActivity extends BaseActivity implements CalendarFragment.O
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
     public void initView() {
         super.initView();
         pager = (ViewPager) findViewById(R.id.pager);

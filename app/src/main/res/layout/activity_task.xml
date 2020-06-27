@@ -189,21 +189,30 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="vertical">
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <Button
-                android:id="@+id/videobtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/start_rec"
+                android:text="Voice Record"
+                android:layout_weight="1"
+                android:layout_gravity="left"></Button>
+            <Button
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:id="@+id/stop_rec"
                 android:layout_gravity="right"
-                android:text="Video"></Button>
-
-            <VideoView
-                android:id="@+id/video"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"></VideoView>
+                android:layout_weight="1"
+                android:text="STOP"></Button>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/play_rec"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:text="PLAY"></Button>
 
         </LinearLayout>
         <LinearLayout
@@ -220,7 +229,26 @@
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></ImageView>
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"></ImageView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/videobtn"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:text="Video"></Button>
+
+            <VideoView
+                android:id="@+id/video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></VideoView>
+
         </LinearLayout>
 
 

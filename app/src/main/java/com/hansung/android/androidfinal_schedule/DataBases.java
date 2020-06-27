@@ -8,9 +8,7 @@ import java.io.Serializable;
 public final class DataBases  {
     //public static final String DB_NAME = "/data/data/com.hansung.android.androidfinal_schedule/files/task.db";
     public static final String DB_NAME = "Tasks.db";
-    public static final int DATABASE_VERSION = 1;
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String COMMA_SEP = ",";
+    public static final int DATABASE_VERSION = 3;
     private DataBases() {}
 
     public static final class Tasks implements BaseColumns{
@@ -24,6 +22,7 @@ public final class DataBases  {
         public static final String TEXT_MEMO = "Memo";
         public static final String PICTURE = "Picture";
         public static final String VIDEO = "Video";
+        public static final String AUDIO = "Audio";
 
         public static final String CREATE_TABLE =
         "CREATE TABLE " + "Tasks" + " (" + "_ID" + "	INTEGER PRIMARY KEY" +","+
@@ -34,7 +33,8 @@ public final class DataBases  {
                 "Place" + "	TEXT" + "," +
                 "Memo" + " TEXT" + ","+
                 "Picture"+ " TEXT" + "," +
-                "Video"	+ " TEXT" + " )";
+                "Video"	+ " TEXT" + "," +
+                "Audio" + " TEXT" +" )";
 
         public  static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 

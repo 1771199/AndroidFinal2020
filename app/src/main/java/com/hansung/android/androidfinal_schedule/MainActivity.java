@@ -72,7 +72,8 @@ public class MainActivity extends BaseActivity {
     private void checkDangerousPermissions() {
         String[] permissions = {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
         };
         int permissionCheck = PackageManager.PERMISSION_GRANTED;
         for (int i = 0; i < permissions.length; i++) {

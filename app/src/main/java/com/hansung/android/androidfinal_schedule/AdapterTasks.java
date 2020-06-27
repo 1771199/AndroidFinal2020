@@ -52,8 +52,7 @@ public class AdapterTasks extends BaseAdapter {
         TextView taskDate = convertView.findViewById(R.id.date_of_task);
         TextView taskName = convertView.findViewById(R.id.name_of_task);
 
-        SingleTask singleTask = task.get(position);
-        Log.e("Position", String.valueOf(position) );
+        final SingleTask singleTask = task.get(position);
 
         taskDate.setText(singleTask.date);
         taskName.setText(singleTask.taskName);
@@ -63,7 +62,7 @@ public class AdapterTasks extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context, TaskActivity.class);
                 intent.putExtra("isNew", false);
-                intent.putExtra("SingleTask", task.get(position));
+                intent.putExtra("SingleTask", singleTask);
                 context.startActivity(intent);
 
             }

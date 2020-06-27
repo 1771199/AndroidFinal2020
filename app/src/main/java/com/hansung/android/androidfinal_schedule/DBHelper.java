@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
+
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -31,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return getReadableDatabase().rawQuery(sql,null);
     }
 
-    public long insertTaskByMethod(String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid) {
+    public long insertTaskByMethod(String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid, String aud) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DataBases.Tasks.TASK_NAME, name);
@@ -42,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DataBases.Tasks.TEXT_MEMO, memo);
         values.put(DataBases.Tasks.PICTURE, pic);
         values.put(DataBases.Tasks.VIDEO, vid);
+        values.put(DataBases.Tasks.AUDIO, aud);
 
 
         return db.insert(DataBases.Tasks.TABLE_NAME,null,values);
@@ -55,7 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete(DataBases.Tasks.TABLE_NAME, whereClause, whereArgs);
     }
 
-    public long updateTaskByMethod(String _id, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid) {
+    public long updateTaskByMethod(String _id, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid, String aud) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -67,6 +70,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DataBases.Tasks.TEXT_MEMO, memo);
         values.put(DataBases.Tasks.PICTURE, pic);
         values.put(DataBases.Tasks.VIDEO, vid);
+        values.put(DataBases.Tasks.AUDIO, aud);
 
         String whereClause = DataBases.Tasks._ID +" = ?";
         String[] whereArgs ={_id};
@@ -74,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.update(DataBases.Tasks.TABLE_NAME, values, whereClause, whereArgs);
     }
 
-    public void syncAllTask(SQLiteDatabase db, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid){
+    public void syncAllTask(SQLiteDatabase db, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid, String aud){
         Cursor cursor = getAllTasksBySQL();
         while (cursor.moveToNext()){
 
@@ -88,6 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DataBases.Tasks.TEXT_MEMO, memo);
         values.put(DataBases.Tasks.PICTURE, pic);
         values.put(DataBases.Tasks.VIDEO, vid);
+        values.put(DataBases.Tasks.AUDIO, aud);
         cursor.moveToNext();
         db.insertOrThrow(DataBases.Tasks.TABLE_NAME, null, values);
     }
@@ -101,7 +106,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(SELECT, null);
         while(cursor.moveToNext()){
             SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
-                    cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
+                    cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getString(9));
             taskArray.add(addedTask);
         }
         return taskArray;
