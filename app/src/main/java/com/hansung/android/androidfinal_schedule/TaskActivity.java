@@ -85,18 +85,17 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         isNew = intent.getExtras().getBoolean("isNew");
         if(isNew == false){
             task = (SingleTask) intent.getSerializableExtra("SingleTask");
-            if(task.taskName!=null) Log.e("taskName: ", "onCreate: NOT NULL" + task.taskName);
-            else Log.e("taskName: ", "onCreate: NULL" );
             setTaskDetail();
         }
         btnTextSet();
 
-       // checkDangerousPermissions();
-
         savebtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                insertRecord();
+                if(isNew){
+                    insertRecord();
+                }
+                else updateRecord();
             }
         });
         deletebtn.setOnClickListener(new View.OnClickListener(){
@@ -131,7 +130,6 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v){
                 dispatchTakeVideoIntent();
-                //videoView.start();
             }
         });
 
@@ -142,10 +140,9 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        LatLng hansung = new LatLng(37.5817891, 127.008175);
-        //googleMap.addMarker(new MarkerOptions().position(hansung).title("한성대학교"));
-        // move the camera
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(hansung));
+        if(isNew == false){
+            getAndSetLocation(task.place);
+        }
 
     }
 
@@ -207,7 +204,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void deleteRecord() {
 
-        long nOfRows = mDbHelper.deleteTaskByMethod(_id.getText().toString());
+        long nOfRows = mDbHelper.deleteUserByMethod(String.valueOf(task._id));
         if (nOfRows >0){
             initUI();
             Toast.makeText(this,"일정 삭제 완료!", Toast.LENGTH_SHORT).show();
@@ -223,7 +220,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (nOfRows >0){
             //initUI();
-            Toast.makeText(this,nOfRows+" 일정 추가 완료!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"일정 추가 완료!", Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this,"추가된 일정 없음", Toast.LENGTH_SHORT).show();
@@ -231,13 +228,13 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void updateRecord() {
 
-        long nOfRows = mDbHelper.insertTaskByMethod(title.getText().toString(), date.getText().toString(), starth.getText()+":"+startm.getText(),
+        long nOfRows = mDbHelper.updateTaskByMethod(String.valueOf(task._id), title.getText().toString(), date.getText().toString(), starth.getText()+":"+startm.getText(),
                 endh.getText()+":"+endm.getText(), place.getText().toString(),memo.getText().toString(), mPhotoFileName, mVideoFileName);
 
         if (nOfRows >0)
-            Toast.makeText(this,"Record Updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"일정 수정 완료!", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this,"No Record Updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"수정된 일정 없음", Toast.LENGTH_SHORT).show();
     }
 
     private void initUI(){
@@ -270,9 +267,16 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
             if(destination != null){
                 destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                         mVideoFileName);
-                videoView.setVideoURI(Uri.parse("/sdcard/Android/data/com.hansung.android.androidfinal_schedule/files/Movies/"+mVideoFileName));
-                videoView.requestFocus();
-                videoView.start();
+                videoView.setVideoURI(Uri.fromFile(destination));
+
+
+                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    public void onPrepared(MediaPlayer player) {
+                        videoView.seekTo(0);
+                        videoView.start();
+                    }
+                });
+
             }
 
         }
@@ -286,20 +290,24 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void getAndSetLocation(String locationName){
-        try {
-            Geocoder geocoder = new Geocoder(this, Locale.KOREA);
-            List<Address> addresses = geocoder.getFromLocationName(locationName, 1);
-            Address bestResult = (Address) addresses.get(0);
+        if(!locationName.equals("")){
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.KOREA);
+                List<Address> addresses = geocoder.getFromLocationName(locationName, 1);
+                Address bestResult = (Address) addresses.get(0);
 
-            glocation = new LatLng(bestResult.getLatitude(), bestResult.getLongitude());
-            googleMap.addMarker(
-                    new MarkerOptions().position(glocation).title(locationName).alpha(0.8f).icon(BitmapDescriptorFactory.defaultMarker())
-            );
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(glocation, 15));
+                glocation = new LatLng(bestResult.getLatitude(), bestResult.getLongitude());
+                googleMap.addMarker(
+                        new MarkerOptions().position(glocation).title(locationName).alpha(0.8f).icon(BitmapDescriptorFactory.defaultMarker())
+                );
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(glocation, 15));
+            }
+            catch (IOException e){
+                Toast.makeText(getApplicationContext(), "Please enter a different name for the location.", Toast.LENGTH_SHORT).show();
+            }
         }
-        catch (IOException e){
-            Toast.makeText(getApplicationContext(), "Please enter a different name for the location.", Toast.LENGTH_SHORT).show();
-        }
+        else initMap();
+
     }
 
     private void checkDangerousPermissions() {
@@ -339,7 +347,6 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if(!task.place.equals("")){
             place.setText(task.place);
-            getAndSetLocation(task.place);
         }
         if(!task.textMemo.equals(""))        memo.setText(task.textMemo);
         if(task.image != null){

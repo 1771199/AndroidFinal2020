@@ -3,11 +3,8 @@ package com.hansung.android.androidfinal_schedule;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -28,70 +25,10 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertTaskBySQL(String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid) {
-        try {
-            String sql = String.format (
-                    "INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s, %s, %s) VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-                    DataBases.Tasks.TABLE_NAME,
-                    DataBases.Tasks._ID,
-                    DataBases.Tasks.TASK_NAME,
-                    DataBases.Tasks.DATE,
-                    DataBases.Tasks.START_TIME,
-                    DataBases.Tasks.END_TIME,
-                    DataBases.Tasks.PLACE,
-                    DataBases.Tasks.TEXT_MEMO,
-                    DataBases.Tasks.PICTURE,
-                    DataBases.Tasks.VIDEO,
-
-                    name,
-                    date,
-                    startTime, endTime,
-                    place,
-                    memo, pic, vid
-            );
-
-            getWritableDatabase().execSQL(sql);
-        } catch (SQLException e) {
-            Log.e(TAG,"Error in inserting recodes");
-        }
-    }
 
     public Cursor getAllTasksBySQL() {
         String sql = "Select * FROM " + DataBases.Tasks.TABLE_NAME;
         return getReadableDatabase().rawQuery(sql,null);
-    }
-
-    public void deleteTaskBySQL(String _id) {
-        try {
-            String sql = String.format (
-                    "DELETE FROM %s WHERE %s = %s",
-                    DataBases.Tasks.TABLE_NAME,
-                    DataBases.Tasks._ID,
-                    _id);
-            getWritableDatabase().execSQL(sql);
-        } catch (SQLException e) {
-            Log.e(TAG,"Error in deleting recodes");
-        }
-    }
-
-    public void updateTaskBySQL(String _id, String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid) {
-        try {
-            String sql = String.format (
-                    "UPDATE  %s SET %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
-                    DataBases.Tasks.TABLE_NAME,
-                    DataBases.Tasks.TASK_NAME, name,
-                    DataBases.Tasks.DATE, date,
-                    DataBases.Tasks.START_TIME, startTime,
-                    DataBases.Tasks.END_TIME, endTime,
-                    DataBases.Tasks.PLACE, place,
-                    DataBases.Tasks.TEXT_MEMO, memo,
-                    DataBases.Tasks.PICTURE, pic,
-                    DataBases.Tasks.VIDEO, vid,
-                    DataBases.Tasks._ID, _id) ;
-            getWritableDatabase().execSQL(sql);
-        } catch (SQLException e) {
-            Log.e(TAG,"Error in updating recodes");
-        }
     }
 
     public long insertTaskByMethod(String name, String date, String startTime, String endTime, String place, String memo, String pic, String vid) {
@@ -110,16 +47,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(DataBases.Tasks.TABLE_NAME,null,values);
     }
 
-    public Cursor getAllTaskByMethod() {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.query(DataBases.Tasks.TABLE_NAME,null,null,null,null,null,null);
-    }
-
-    public long deleteTaskByMethod(String title) {
+    public long deleteUserByMethod(String _id) {
         SQLiteDatabase db = getWritableDatabase();
 
-        String whereClause = DataBases.Tasks.TASK_NAME +" = ?";
-        String[] whereArgs ={title};
+        String whereClause = DataBases.Tasks._ID + " = ?";
+        String[] whereArgs = {_id};
         return db.delete(DataBases.Tasks.TABLE_NAME, whereClause, whereArgs);
     }
 
@@ -160,34 +92,19 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insertOrThrow(DataBases.Tasks.TABLE_NAME, null, values);
     }
 
-    public ArrayList<SingleTask> getTaskSelectedOption(String date, String option){
-        ArrayList<SingleTask> tasks = new ArrayList<>();
-        Cursor cursor = getAllTasksBySQL();
-        String[] splitDate = new String[3];
-        splitDate = date.split("-");
-        if(option == "Month"){
-            while(cursor.moveToNext()){
-                String dbDate = cursor.getString(cursor.getColumnIndex("Date"));
-                if((dbDate.split("-")[0].equals(splitDate[0])) && dbDate.split("-")[1].equals(splitDate[1])){
-                    Log.e(TAG, "inIF" );
-                    SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
-                            cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
-                    tasks.add(addedTask);
-                }
-            }
+    public ArrayList<SingleTask> selectDate(ArrayList<SingleTask> taskArray, String start, String end) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String SELECT = "SELECT * FROM " + DataBases.Tasks.TABLE_NAME +
+                " WHERE " + DataBases.Tasks.DATE + " BETWEEN '" + start + "' AND '"
+                + end + "' ORDER BY " + DataBases.Tasks.DATE + " ASC, " +
+                DataBases.Tasks._ID + " ASC;";
+        Cursor cursor = db.rawQuery(SELECT, null);
+        while(cursor.moveToNext()){
+            SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
+                    cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
+            taskArray.add(addedTask);
         }
-        else if(option == "Day"){
-            while(cursor.moveToNext()){
-                String dbDate = cursor.getString(cursor.getColumnIndex("Date"));
-                if(dbDate.equals(date)){
-                    SingleTask addedTask = new SingleTask(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4),
-                            cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
-                    tasks.add(addedTask);
-                }
-            }
-        }
-        return tasks;
+        return taskArray;
     }
-
 
 }

@@ -3,7 +3,7 @@ package com.hansung.android.androidfinal_schedule;
 import java.io.Serializable;
 
 public class SingleTask implements Serializable {
-    public static String taskName;
+    public String taskName;
     public String date;
     public String startTime;
     public String endTime;

@@ -1,15 +1,11 @@
 package com.hansung.android.androidfinal_schedule;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -48,7 +44,6 @@ public class CalendarFragment extends Fragment {
 
     public void setCalendar(Long date){
         calendar = Calendar.getInstance();
-
         calendar.setTimeInMillis(date);
     }
 
@@ -99,11 +94,13 @@ public class CalendarFragment extends Fragment {
             for (int i = 1; i < dayNum; i++){
                 dayList.add("");
             }
-            String taskDate = sdf.format(Calendar.getInstance().getTime());
-            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Month");
+            String startDate = sdf.format(calendar.getTime());
+            Calendar copyCal = calendar;
+            copyCal.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            String endDate = sdf.format(copyCal.getTime());
+            singleTaskArrayList = dbHelper.selectDate(singleTaskArrayList, startDate, endDate);
             setCalendarDate(calendar.get(Calendar.MONTH)+1);
             taskList = mRootView.findViewById(R.id.task_list);
-            //singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Month");
 
         }
 
@@ -117,7 +114,7 @@ public class CalendarFragment extends Fragment {
             taskList = mRootView.findViewById(R.id.task_list);
             setWeekCalendarDate(calendar);
 
-            }
+        }
 
         else{
             mRootView = (ViewGroup)inflater.inflate(R.layout.day_calendar_layout, container, false);
@@ -127,7 +124,7 @@ public class CalendarFragment extends Fragment {
             TextView day = mRootView.findViewById(R.id.day);
             day.setText(dayOfWeek(calendar));
             String taskDate = sdf.format(calendar.getTime());
-            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Day");
+            singleTaskArrayList = dbHelper.selectDate(singleTaskArrayList, taskDate, taskDate);
             taskAdapter = new AdapterTasks(getContext(), singleTaskArrayList);
             taskList = mRootView.findViewById(R.id.task_list);
             taskList.setAdapter(taskAdapter);
@@ -162,12 +159,14 @@ public class CalendarFragment extends Fragment {
     }
 
     private void setWeekCalendarDate(Calendar calendar){
-        for (int i = 0; i < 7; i++){
-            String taskDate = sdf.format(calendar.getTime());
-            singleTaskArrayList = dbHelper.getTaskSelectedOption(taskDate, "Day");
-            dayList.add(String.valueOf(calendar.get(Calendar.DATE)));
+        String startDate = sdf.format(calendar.getTime());
+        dayList.add(String.valueOf(calendar.get(Calendar.DATE)));
+        for (int i = 0; i < 6; i++){
             calendar.add(Calendar.DATE, 1);
+            dayList.add(String.valueOf(calendar.get(Calendar.DATE)));
         }
+        String endDate = sdf.format(calendar.getTime());
+        dbHelper.selectDate(singleTaskArrayList, startDate, endDate);
 
     }
 
