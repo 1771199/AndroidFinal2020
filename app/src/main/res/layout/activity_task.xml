@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginVertical="2dp"
     tools:context=".TaskActivity">
 
     <LinearLayout
@@ -136,6 +138,9 @@
                 android:gravity="center_vertical"
                 android:text="분"></TextView>
         </LinearLayout>
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -191,70 +196,69 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/start_rec"
                 android:text="Voice Record"
-                android:layout_weight="1"
-                android:layout_gravity="left"></Button>
+                android:layout_gravity="left"
+                android:layout_marginRight="10dp"></Button>
             <Button
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:id="@+id/stop_rec"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:text="STOP"></Button>
+                android:layout_gravity="center"
+                android:text="STOP"
+                android:layout_marginHorizontal="10dp"></Button>
             <Button
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:id="@+id/play_rec"
                 android:layout_gravity="right"
-                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
                 android:text="PLAY"></Button>
 
         </LinearLayout>
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:layout_gravity="center">
             <Button
                 android:id="@+id/camerabtn"
                 android:layout_width="100dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Camera"
-                android:layout_gravity="right"></Button>
+                android:layout_gravity="left"
+                android:layout_marginRight="20dp"></Button>
+            <Button
+                android:id="@+id/videobtn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="20dp"
+                android:text="Video"></Button>
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"></ImageView>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/videobtn"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:text="Video"></Button>
 
             <VideoView
                 android:id="@+id/video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></VideoView>
-
         </LinearLayout>
-
-
-
-
-
     </LinearLayout>
 
 </ScrollView>

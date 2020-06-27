@@ -97,6 +97,8 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         btnTextSet();
 
+        killMediaPlayer();
+
         savebtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -167,13 +169,21 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void killMediaPlayer() {
+        if(mediaPlayer!=null){
+            try{
+                mediaPlayer.release();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     protected  void onStop() {
         super.onStop();
-        if(mMediaRecorder!=null){
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+        killMediaPlayer();
+
     }
 
     /*
@@ -319,14 +329,13 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
-            if(destination != null){
-                videoView = findViewById(R.id.video);
+            if(mVideoFileName != null){
                 mc = new MediaController(this);
                 destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                         mVideoFileName);
                 Log.e("VideoFileName: ",destination.getName());
-                videoView.setMediaController(mc);
                 videoView.setVideoURI(Uri.fromFile(destination));
+                videoView.setMediaController(mc);
 
 
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -463,18 +472,15 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setImageView(String imageFileName){
         if(imageFileName != ""){
             mPhotoFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), imageFileName);
-            Log.e("VideoFileName: ", mPhotoFile.getName());
             imageView.setImageURI(Uri.fromFile(mPhotoFile));
         }
     }
 
     public void setVideoView(String vedName){
         if(vedName !=""){
-            videoView = findViewById(R.id.video);
             mc = new MediaController(this);
             destination = new File(getExternalFilesDir(Environment.DIRECTORY_MOVIES),
                     vedName);
-            Log.e("VideoFileName: ",destination.getName());
             videoView.setMediaController(mc);
             videoView.setVideoURI(Uri.fromFile(destination));
 

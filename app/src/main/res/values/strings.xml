@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidFinal_Schedule</string>
+    <string name="app_name">Task Diary</string>
     <string name="plus">PLUS</string>
     <string name="save">SAVE</string>
     <string name="delete">DELETE</string>
