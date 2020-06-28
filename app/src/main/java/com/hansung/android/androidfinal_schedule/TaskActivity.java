@@ -1,11 +1,13 @@
 package com.hansung.android.androidfinal_schedule;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -78,6 +80,7 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static SingleTask task;
     MediaPlayer mediaPlayer;
     MediaController mc;
+    AlertDialog.Builder builder;
 
 
     @Override
@@ -99,6 +102,9 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         killMediaPlayer();
 
+
+
+
         savebtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -113,8 +119,19 @@ public class TaskActivity extends AppCompatActivity implements OnMapReadyCallbac
         deletebtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                deleteRecord();
-                finish();
+                builder = new AlertDialog.Builder(TaskActivity.this);
+                builder.setTitle("일정 삭제");
+                builder.setMessage("일정을 삭제하시겠습니까?");
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRecord();
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("NO", null);
+                builder.create().show();
+
             }
         });
 
